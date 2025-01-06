@@ -1,0 +1,89 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deeper Into the Shadows</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #cccccc;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .content {
+            text-align: center;
+            font-size: 18px;
+            font-weight: normal;
+            border-radius: 20px;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .reveal {
+            color: #ff6347;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Deeper into the Shadows</h1>
+        <p>You've come far, but the dark is vast. Here's your next challenge:</p>
+
+        <p>Find the key hidden within these words:</p>
+        <p class="reveal" onclick="revealClue()">Click to reveal the hidden text.</p>
+        <p id="hiddenClue" class="hidden"></p>
+
+        <form id="puzzleForm">
+            <input type="text" id="userInput" placeholder="Enter the key...">
+            <input type="submit" value="Unlock">
+        </form>
+
+        <div id="response" class="hidden">
+            <p>Access Granted:</p>
+            <p><a href="clue2.html">Next Clue</a></p>
+        </div>
+    </div>
+
+    <script>
+      
+        const hashedKey = "176473d7313395b6e209bc6b1d57aa160b628706860aa0554d7af60a1d40ab87";
+
+        async function hashInput(input) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        function revealClue() {
+            document.getElementById('hiddenClue').innerText = "Wkh nhb lv lq wkh uhiohfwlrq ri rxu ihduv. Orrn iru wkh sdolqgurph lq wkh qljkw.";
+            document.getElementById('hiddenClue').classList.remove('hidden');
+        }
+
+        document.getElementById('puzzleForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const userInput = document.getElementById('userInput').value.trim().toLowerCase();
+            const hashedInput = await hashInput(userInput);
+
+            if (hashedInput === hashedKey) {
+                document.getElementById('response').classList.remove('hidden');
+            } else {
+                alert('The darkness holds the key. Try again.');
+            }
+        };
+    </script>
+</body>
+</html>
